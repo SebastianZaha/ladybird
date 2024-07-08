@@ -1,0 +1,21 @@
+# To automatically source these pretty printing helpers when lldb is opened in the project root
+# one needs to add the following setting to their ~/.lldbinit:
+#
+#     settings set target.load-cwd-lldbinit true
+#
+# Some IDEs (like clion) also automatically source this file. For other IDE launcher setups this
+# file should be manually sourced in the launch configuration. For example for vscode or nvim
+# using codelldb it would look something like:
+#
+#     "lldb.launch.initCommands": ["command source ${workspaceFolder}/.lldbinit"]
+#
+
+type summary add -w ladybird AK::Error -s "Code: ${var.m_code}, Message: ${var.m_string_literal}, Syscall: ${var.m_syscall}"
+type summary add -w ladybird -x AK::Vector< -s "size: ${var.m_size}, capacity: ${var.m_capacity}" --expand
+type synthetic add -w ladybird -x "^AK::Variant<.+>$" -l ladybird_lldb.VariantSyntheticProvider
+type summary add -w ladybird -x "^AK::Variant<.+>$" -F ladybird_lldb.variant_summary -e
+type summary add -w ladybird AK::String -F ladybird_lldb.string_summary
+type summary add -w ladybird AK::StringImpl -F ladybird_lldb.string_impl_summary
+type summary add -w ladybird AK::StringView -F ladybird_lldb.string_view_summary
+type category enable ladybird
+command script import Meta/ladybird_lldb.py
