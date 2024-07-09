@@ -26,6 +26,9 @@ WebContentClient::WebContentClient(NonnullOwnPtr<Core::LocalSocket> socket, View
     : IPC::ConnectionToServer<WebContentClientEndpoint, WebContentServerEndpoint>(*this, move(socket))
 {
     s_clients.set(this);
+    dbgln("setting 0 m_views");
+    // Core::Process::wait_for_debugger_and_break();
+
     m_views.set(0, &view);
 }
 
@@ -706,6 +709,8 @@ Optional<ViewImplementation&> WebContentClient::view_for_page_id(u64 page_id, So
 {
     if (auto view = m_views.get(page_id); view.has_value())
         return *view.value();
+
+    dbgln("m_views {} {}", m_views.keys().size(), m_views.keys());
 
     dbgln("WebContentClient::{}: Did not find a page with ID {}", location.function_name(), page_id);
     return {};

@@ -18,8 +18,7 @@
 static constexpr CGFloat const WINDOW_WIDTH = 600;
 static constexpr CGFloat const WINDOW_HEIGHT = 400;
 
-@interface TaskManager ()
-{
+@interface TaskManager () {
     RefPtr<Core::Timer> m_update_timer;
 }
 
@@ -42,7 +41,9 @@ static constexpr CGFloat const WINDOW_HEIGHT = 400;
                                 defer:NO];
 
     if (self) {
-        self.web_view = [[LadybirdWebView alloc] init:nil];
+        dbgln("lwv init nil");
+
+        self.web_view = [[LadybirdWebView alloc] init:nil parentView:nil];
         [self.web_view setPostsBoundsChangedNotifications:YES];
 
         auto* scroll_view = [[NSScrollView alloc] init];

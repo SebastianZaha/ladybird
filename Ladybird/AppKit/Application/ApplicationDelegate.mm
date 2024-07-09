@@ -18,8 +18,7 @@
 #    error "This project requires ARC"
 #endif
 
-@interface ApplicationDelegate () <TaskManagerDelegate>
-{
+@interface ApplicationDelegate () <TaskManagerDelegate> {
     Vector<URL::URL> m_initial_urls;
     URL::URL m_new_tab_page_url;
 
@@ -111,8 +110,9 @@
 - (TabController*)createNewTab:(Optional<URL::URL> const&)url
                        fromTab:(Tab*)tab
                    activateTab:(Web::HTML::ActivateTab)activate_tab
+                     pageIndex:(Optional<u64>)page_index
 {
-    auto* controller = [self createNewTab:activate_tab fromTab:tab];
+    auto* controller = [self createNewTab:activate_tab fromTab:tab pageIndex:page_index];
     [controller loadURL:url.value_or(m_new_tab_page_url)];
 
     return controller;
@@ -122,8 +122,9 @@
                                    url:(URL::URL const&)url
                                fromTab:(nullable Tab*)tab
                            activateTab:(Web::HTML::ActivateTab)activate_tab
+                             pageIndex:(Optional<u64>)page_index
 {
-    auto* controller = [self createNewTab:activate_tab fromTab:tab];
+    auto* controller = [self createNewTab:activate_tab fromTab:tab pageIndex:page_index];
     [controller loadHTML:html url:url];
 
     return controller;
@@ -202,7 +203,8 @@
 - (nonnull TabController*)createNewTab:(Web::HTML::ActivateTab)activate_tab
                                fromTab:(nullable Tab*)tab
 {
-    auto* controller = [[TabController alloc] init:!m_allow_popups];
+    dbgln("createNewTab fromTab {} !! (new tab is allocated 2 lines lower)", tab);
+    auto* controller = [[TabController alloc] init:!m_allow_popups parentTab:tab];
     [controller showWindow:nil];
 
     if (tab) {

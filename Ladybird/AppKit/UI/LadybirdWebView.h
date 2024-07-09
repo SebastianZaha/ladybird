@@ -21,7 +21,8 @@
 @protocol LadybirdWebViewObserver <NSObject>
 
 - (String const&)onCreateNewTab:(URL::URL const&)url
-                    activateTab:(Web::HTML::ActivateTab)activate_tab;
+                    activateTab:(Web::HTML::ActivateTab)activate_tab
+                      pageIndex:(Optional<u64>)page_index;
 
 - (String const&)onCreateNewTab:(StringView)html
                             url:(URL::URL const&)url
@@ -46,7 +47,7 @@
 
 @interface LadybirdWebView : NSClipView <NSMenuDelegate>
 
-- (instancetype)init:(id<LadybirdWebViewObserver>)observer;
+- (instancetype)init:(id<LadybirdWebViewObserver>)observer parentView:(LadybirdWebView*)parentView;
 
 - (void)loadURL:(URL::URL const&)url;
 - (void)loadHTML:(StringView)html;

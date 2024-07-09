@@ -25,8 +25,7 @@ static constexpr NSInteger CONTEXT_MENU_EDIT_NODE_TAG = 1;
 static constexpr NSInteger CONTEXT_MENU_REMOVE_ATTRIBUTE_TAG = 2;
 static constexpr NSInteger CONTEXT_MENU_COPY_ATTRIBUTE_VALUE_TAG = 3;
 
-@interface Inspector ()
-{
+@interface Inspector () {
     OwnPtr<WebView::InspectorClient> m_inspector_client;
 }
 
@@ -61,8 +60,9 @@ static constexpr NSInteger CONTEXT_MENU_COPY_ATTRIBUTE_VALUE_TAG = 3;
 
     if (self) {
         self.tab = tab;
+        dbgln("lwv init nil");
 
-        self.web_view = [[LadybirdWebView alloc] init:nil];
+        self.web_view = [[LadybirdWebView alloc] init:nil parentView:nil];
         [self.web_view setPostsBoundsChangedNotifications:YES];
 
         m_inspector_client = make<WebView::InspectorClient>([[tab web_view] view], [[self web_view] view]);

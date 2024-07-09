@@ -33,12 +33,14 @@
 
 - (nonnull TabController*)createNewTab:(Optional<URL::URL> const&)url
                                fromTab:(nullable Tab*)tab
-                           activateTab:(Web::HTML::ActivateTab)activate_tab;
+                           activateTab:(Web::HTML::ActivateTab)activate_tab
+                             pageIndex:(Optional<u64>)page_index;
 
 - (nonnull TabController*)createNewTab:(StringView)html
                                    url:(URL::URL const&)url
                                fromTab:(nullable Tab*)tab
-                           activateTab:(Web::HTML::ActivateTab)activate_tab;
+                           activateTab:(Web::HTML::ActivateTab)activate_tab
+                             pageIndex:(Optional<u64>)page_index;
 
 - (void)setActiveTab:(nonnull Tab*)tab;
 - (nullable Tab*)activeTab;

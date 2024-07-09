@@ -10,8 +10,8 @@ then
     export LADYBIRD_SOURCE_DIR
 fi
 
-
-: "${WEBDRIVER_BINARY:=$(env PATH="${LADYBIRD_SOURCE_DIR}/Build/ladybird/bin/Ladybird.app/Contents/MacOS:${LADYBIRD_SOURCE_DIR}/Build/ladybird/bin:${LADYBIRD_SOURCE_DIR}/Build/bin:${PATH}" \
+B="ladybird-debug"
+: "${WEBDRIVER_BINARY:=$(env PATH="${LADYBIRD_SOURCE_DIR}/Build/${B}/bin/Ladybird.app/Contents/MacOS:${LADYBIRD_SOURCE_DIR}/Build/${B}/bin:${LADYBIRD_SOURCE_DIR}/Build/bin:${PATH}" \
                          which WebDriver)}"
 update_expectations_metadata=false
 remove_wpt_repository=false
@@ -73,7 +73,8 @@ fi
 python3 ./concat-extract-metadata.py --extract metadata.txt metadata
 
 # Run tests.
-python3 ./wpt/wpt run ladybird \
+#  \
+python3 ./wpt/wpt run ladybird /css/CSS2/floats/hit-test-floats-002.html \
                   --webdriver-binary "${WEBDRIVER_BINARY}" \
                   --no-fail-on-unexpected \
                   --no-fail-on-unexpected-pass \
@@ -83,8 +84,8 @@ python3 ./wpt/wpt run ladybird \
                   --manifest ./MANIFEST.json \
                   --webdriver-arg="--certificate=${PWD}/wpt/tools/certs/cacert.pem" \
                   --webdriver-arg="--certificate=${LADYBIRD_SOURCE_DIR}/Build/lagom/cacert.pem" \
-                  --webdriver-arg="--enable-qt-networking" \
-                  --log-raw "${wpt_run_log_filename}"
+                  --log-mach -
+                  #--log-raw "${wpt_run_log_filename}"
 
 # Update expectations metadata files if requested
 if [[ $update_expectations_metadata == true ]]; then

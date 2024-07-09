@@ -141,15 +141,21 @@ Gfx::IntPoint WebViewBridge::to_widget_position(Gfx::IntPoint content_position) 
     return scale_for_device(content_position, inverse_device_pixel_ratio());
 }
 
-void WebViewBridge::initialize_client(CreateNewClient)
+void WebViewBridge::initialize_client(CreateNewClient create_new_client)
 {
-    VERIFY(on_request_web_content);
-
     // FIXME: Don't create a new process when CreateNewClient is false
     //        We should create a new tab/window in the UI instead, and re-use the existing WebContentClient object.
-    m_client_state = {};
 
-    m_client_state.client = on_request_web_content();
+    if (create_new_client == CreateNewClient::Yes) {
+        dbgln("creating new client");
+        VERIFY(on_request_web_content);
+        m_client_state = {};
+        m_client_state.client = on_request_web_content();
+    } else {
+        dbgln("registering view {}", m_client_state.page_index);
+        m_client_state.client->register_view(m_client_state.page_index, *this);
+    }
+
     m_client_state.client->on_web_content_process_crash = [this] {
         Core::deferred_invoke([this] {
             handle_web_content_process_crash();

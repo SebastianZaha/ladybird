@@ -59,7 +59,7 @@ static constexpr CGFloat const WINDOW_HEIGHT = 800;
     return default_favicon;
 }
 
-- (instancetype)init
+- (instancetype)init:(Tab*)parentTab
 {
     auto screen_rect = [[NSScreen mainScreen] frame];
     auto position_x = (NSWidth(screen_rect) - WINDOW_WIDTH) / 2;
@@ -77,7 +77,8 @@ static constexpr CGFloat const WINDOW_HEIGHT = 800;
         // Remember last window position
         self.frameAutosaveName = @"window";
 
-        self.web_view = [[LadybirdWebView alloc] init:self];
+        dbgln("lwv init self");
+        self.web_view = [[LadybirdWebView alloc] init:self parentView:parentTab ? parentTab.web_view : nil];
         [self.web_view setPostsBoundsChangedNotifications:YES];
 
         self.favicon = [Tab defaultFavicon];
@@ -270,12 +271,14 @@ static constexpr CGFloat const WINDOW_HEIGHT = 800;
 
 - (String const&)onCreateNewTab:(URL::URL const&)url
                     activateTab:(Web::HTML::ActivateTab)activate_tab
+                      pageIndex:(Optional<u64>)page_index
 {
     auto* delegate = (ApplicationDelegate*)[NSApp delegate];
 
     auto* controller = [delegate createNewTab:url
                                       fromTab:self
-                                  activateTab:activate_tab];
+                                  activateTab:activate_tab
+                                    pageIndex:page_index];
 
     auto* tab = (Tab*)[controller window];
     return [[tab web_view] handle];
