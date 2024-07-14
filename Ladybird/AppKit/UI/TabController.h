@@ -22,7 +22,7 @@ struct TabSettings {
 
 @interface TabController : NSWindowController <NSWindowDelegate>
 
-- (instancetype)init:(BOOL)block_popups;
+- (instancetype)init:(BOOL)block_popups parentTab:(Tab*)parentTab;
 
 - (void)loadURL:(URL::URL const&)url;
 - (void)loadHTML:(StringView)html url:(URL::URL const&)url;

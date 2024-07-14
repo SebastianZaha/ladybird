@@ -46,11 +46,12 @@ static NSString* const TOOLBAR_TAB_OVERVIEW_IDENTIFIER = @"ToolbarTabOverviewIde
 
 @end
 
-@interface TabController () <NSToolbarDelegate, NSSearchFieldDelegate>
-{
+@interface TabController () <NSToolbarDelegate, NSSearchFieldDelegate> {
     ByteString m_title;
 
     TabSettings m_settings;
+
+    Tab* m_parent_tab;
 
     bool m_can_navigate_back;
     bool m_can_navigate_forward;
@@ -82,7 +83,7 @@ static NSString* const TOOLBAR_TAB_OVERVIEW_IDENTIFIER = @"ToolbarTabOverviewIde
 @synthesize new_tab_toolbar_item = _new_tab_toolbar_item;
 @synthesize tab_overview_toolbar_item = _tab_overview_toolbar_item;
 
-- (instancetype)init:(BOOL)block_popups
+- (instancetype)init:(BOOL)block_popups parentTab:(Tab*)parentTab
 {
     if (self = [super init]) {
         self.toolbar = [[NSToolbar alloc] initWithIdentifier:TOOLBAR_IDENTIFIER];
@@ -94,6 +95,7 @@ static NSString* const TOOLBAR_TAB_OVERVIEW_IDENTIFIER = @"ToolbarTabOverviewIde
         m_settings = { .block_popups = block_popups };
         m_can_navigate_back = false;
         m_can_navigate_forward = false;
+        m_parent_tab = parentTab;
     }
 
     return self;
@@ -200,7 +202,7 @@ static NSString* const TOOLBAR_TAB_OVERVIEW_IDENTIFIER = @"ToolbarTabOverviewIde
 
     self.tab.titlebarAppearsTransparent = NO;
 
-    [delegate createNewTab:OptionalNone {}
+    [delegate createNewTab:OptionalNone { }
                    fromTab:[self tab]
                activateTab:Web::HTML::ActivateTab::Yes];
 
@@ -520,7 +522,7 @@ static NSString* const TOOLBAR_TAB_OVERVIEW_IDENTIFIER = @"ToolbarTabOverviewIde
 
 - (IBAction)showWindow:(id)sender
 {
-    self.window = [[Tab alloc] init];
+    self.window = [[Tab alloc] init:self->m_parent_tab];
     [self.window setDelegate:self];
 
     [self.window setToolbar:self.toolbar];

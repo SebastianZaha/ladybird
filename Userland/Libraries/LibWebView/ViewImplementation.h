@@ -220,6 +220,11 @@ public:
     virtual Gfx::IntPoint to_content_position(Gfx::IntPoint widget_position) const = 0;
     virtual Gfx::IntPoint to_widget_position(Gfx::IntPoint content_position) const = 0;
 
+    enum class CreateNewClient {
+        No,
+        Yes,
+    };
+
 protected:
     static constexpr auto ZOOM_MIN_LEVEL = 0.3f;
     static constexpr auto ZOOM_MAX_LEVEL = 5.0f;
@@ -234,10 +239,6 @@ protected:
 
     void handle_resize();
 
-    enum class CreateNewClient {
-        No,
-        Yes,
-    };
     virtual void initialize_client(CreateNewClient = CreateNewClient::Yes) { }
 
     void handle_web_content_process_crash();

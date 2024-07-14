@@ -12,6 +12,8 @@
 
 @interface Tab : NSWindow
 
+- (instancetype)init:(Tab*)parentTab;
+
 - (void)tabWillClose;
 
 - (void)openInspector:(id)sender;

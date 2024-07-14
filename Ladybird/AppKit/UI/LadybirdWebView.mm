@@ -48,8 +48,7 @@ struct HideCursor {
     }
 };
 
-@interface LadybirdWebView ()
-{
+@interface LadybirdWebView () {
     OwnPtr<Ladybird::WebViewBridge> m_web_view_bridge;
 
     URL::URL m_context_menu_url;
@@ -85,7 +84,7 @@ struct HideCursor {
 @synthesize video_context_menu = _video_context_menu;
 @synthesize status_label = _status_label;
 
-- (instancetype)init:(id<LadybirdWebViewObserver>)observer
+- (instancetype)init:(id<LadybirdWebViewObserver>)observer parentView:(LadybirdWebView*)parentView
 {
     if (self = [super init]) {
         self.observer = observer;
@@ -107,7 +106,8 @@ struct HideCursor {
         m_web_view_bridge = MUST(Ladybird::WebViewBridge::create(move(screen_rects), device_pixel_ratio, [delegate webContentOptions], [delegate webdriverContentIPCPath], [delegate preferredColorScheme], [delegate preferredContrast], [delegate preferredMotion]));
         [self setWebViewCallbacks];
 
-        m_web_view_bridge->initialize_client();
+        dbgln("initializing client {}", observer);
+        m_web_view_bridge->initialize_client(parentView ? WebView::ViewImplementation::CreateNewClient::No : WebView::ViewImplementation::CreateNewClient::Yes);
 
         auto* area = [[NSTrackingArea alloc] initWithRect:[self bounds]
                                                   options:NSTrackingActiveInKeyWindow | NSTrackingInVisibleRect | NSTrackingMouseMoved
@@ -313,8 +313,10 @@ static void copy_data_to_clipboard(StringView data, NSPasteboardType pasteboard_
         [self setNeedsDisplay:YES];
     };
 
-    m_web_view_bridge->on_new_web_view = [weak_self](auto activate_tab, auto, auto) {
+    m_web_view_bridge->on_new_web_view = [weak_self](auto activate_tab, auto, Optional<u64> page_index) {
         LadybirdWebView* self = weak_self;
+        dbgln("LadybirdWebView.mm on_new_web_view {}", page_index);
+
         if (self == nil) {
             return String {};
         }

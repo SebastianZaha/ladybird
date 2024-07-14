@@ -24,6 +24,8 @@ PageHost::PageHost(ConnectionFromClient& client)
 
 PageClient& PageHost::create_page()
 {
+    dbgln("creating page {}", m_next_id);
+
     m_pages.set(m_next_id, PageClient::create(Web::Bindings::main_thread_vm(), *this, m_next_id));
     ++m_next_id;
     return *m_pages.get(m_next_id - 1).value();

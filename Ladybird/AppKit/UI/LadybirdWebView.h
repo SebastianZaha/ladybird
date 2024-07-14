@@ -46,7 +46,7 @@
 
 @interface LadybirdWebView : NSClipView <NSMenuDelegate>
 
-- (instancetype)init:(id<LadybirdWebViewObserver>)observer;
+- (instancetype)init:(id<LadybirdWebViewObserver>)observer parentView:(LadybirdWebView*)parentView;
 
 - (void)loadURL:(URL::URL const&)url;
 - (void)loadHTML:(StringView)html;
